@@ -35,7 +35,7 @@ public abstract class CBBaseIC extends FishyICSign {
 	 * Gets the help text. Every IC must have one.
 	 * 
 	 * Example:<br>
-	 * <i>Logic function: O = NOT(I). Inverts the input signal.</i>
+	 * <i>Logic gate: NOT. Inverts the input signal.</i>
 	 * 
 	 * @return the help text
 	 */
@@ -74,7 +74,7 @@ public abstract class CBBaseIC extends FishyICSign {
 	
 	@Override
 	public void remove() {
-		// FishyIC will handle the removal from PlayerRightClickWatcher
+		// FishyICSign will handle the removal from PlayerRightClickWatcher
 		super.remove();
 	}
 	
