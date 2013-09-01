@@ -53,6 +53,8 @@ public class Lift extends FishyRightClickSign {
 						                                      targetY,
 						                                      this.location.getIntZ()
 				                                          );
+				// onPLayerRightClick will probably be executed in the server thread anyway,
+				// but let's do it cleanly and put the world access in a FishyTask
 				FishyTask liftPlayer = new LiftPlayerTask(playerName, targetSignLocation);
 				liftPlayer.submit();
 			}
@@ -149,6 +151,12 @@ public class Lift extends FishyRightClickSign {
 		}
 	};
 	
+	/**
+	 * Does the dirty work for the [Lift] sign in the server thread.
+	 * 
+	 * @author Stefan Steinheimer (nosefish)
+	 *
+	 */
 	public static class LiftPlayerTask extends FishyTask {
 		private static final int OBSTRUCTED = -1;
 		private static final int NO_FLOOR = -2;
@@ -170,6 +178,7 @@ public class Lift extends FishyRightClickSign {
 			String message = "";
 			FishyLocationInt playerLoc = new FishyLocationInt(player.getLocation());
 			int safeY = findSafeY(playerLoc.getIntX(), targetSignLocation.getIntY(), playerLoc.getIntZ());
+			boolean isUp = safeY > playerLoc.getIntY();
 			switch (safeY) {
 			case OBSTRUCTED:
 				message = "You would end up in a wall!";
@@ -182,11 +191,11 @@ public class Lift extends FishyRightClickSign {
 				if (message == NO_SIGN_MESSAGE) {
 					break;
 				}
-				player.teleportTo(player.getX(), (double)safeY, player.getZ());
+				player.teleportTo(player.getX(), (double)safeY, player.getZ(), player.getPitch(), player.getRotation(), player.getWorld());
 				break;
 			}
 			if (message.isEmpty()) {
-				message = "You have used a lift.";
+				message = "The lift moved you " + (isUp ? "up" : "down") + " a floor.";
 			}
 			player.message(Colors.ORANGE + message);
 		}
