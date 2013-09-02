@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signs.plumbing.FishySignSignal;
-import net.gmx.nosefish.fishysigns.world.WorldValuePublisher;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
 //TODO: self-triggered version
