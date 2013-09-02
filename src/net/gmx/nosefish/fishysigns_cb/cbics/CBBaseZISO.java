@@ -27,8 +27,7 @@ public abstract class CBBaseZISO extends CBBaseIC {
 			ServerOddTickWatcher.getInstance().remove(this.getID());
 		}
 	}
-	
-	
+		
 	//Not exactly elegant, but necessary to make dual-mode ICs easy to set up.
 	protected boolean allowSelfTrigger() {
 		return true;

@@ -17,7 +17,7 @@ public class MC1020 extends CBBaseZISO {
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
-		Pattern.compile("\\[MC1020\\](S)?", Pattern.CASE_INSENSITIVE),
+		Pattern.compile("\\[MC1020\\][S]?", Pattern.CASE_INSENSITIVE),
 		null,
 		null
 		};
@@ -38,9 +38,10 @@ public class MC1020 extends CBBaseZISO {
 
 	@Override
 	public String getHelpText() {
+		String part1 = "Logic gate: 1-bit random number generator. ";
 		String part2 = (allowSelfTrigger() ? "Self-triggered version." :
 		                                     "Random output when input changes from low to high.");
-		return "Logic gate: 1-bit random number generator. " + part2;
+		return  part1 + part2;
 	}
 
 	@Override

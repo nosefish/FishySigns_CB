@@ -25,7 +25,8 @@ public abstract class CBBaseIC extends FishyICSign {
 	public abstract String getCode();
 	
 	/**
-	 * Gets the name of this IC, e.g. <i>NOT</i>.
+	 * Gets the name of this IC that appears on the first line
+	 * , e.g. <i>NOT</i>. Must not be longer than 15 characters.
 	 * 
 	 * @return the name
 	 */
