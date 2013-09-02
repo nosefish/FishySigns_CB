@@ -69,7 +69,7 @@ public abstract class CBBaseIC extends FishyICSign {
 		if (this.shouldRefreshOnLoad()) {
 			this.refresh();
 		}
-		PlayerRightClickWatcher.getInstance().register(this, this.location);
+		PlayerRightClickWatcher.getInstance().register(this.getID(), this.location);
 	}
 	
 	@Override
