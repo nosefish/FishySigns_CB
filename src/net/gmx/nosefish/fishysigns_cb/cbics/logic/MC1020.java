@@ -6,16 +6,18 @@ import java.util.regex.Pattern;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signs.plumbing.FishySignSignal;
-import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
+import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseZISO;
 
-//TODO: self-triggered version
-public class MC1020 extends CBBaseIC {
+
+public class MC1020 extends CBBaseZISO {
 	final static Random rng = new Random(System.nanoTime()); 
+	
+	private boolean isSelfTriggered = false;
 	
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
-		Pattern.compile("\\[MC1020\\]", Pattern.CASE_INSENSITIVE),
+		Pattern.compile("\\[MC1020\\](S)?", Pattern.CASE_INSENSITIVE),
 		null,
 		null
 		};
@@ -36,7 +38,9 @@ public class MC1020 extends CBBaseIC {
 
 	@Override
 	public String getHelpText() {
-		return "Logic gate: 1-bit random number generator. Random output when input changes from low to high.";
+		String part2 = (allowSelfTrigger() ? "Self-triggered version." :
+		                                     "Random output when input changes from low to high.");
+		return "Logic gate: 1-bit random number generator. " + part2;
 	}
 
 	@Override
@@ -46,12 +50,32 @@ public class MC1020 extends CBBaseIC {
 
 	@Override
 	protected void onRedstoneInputChange(FishySignSignal oldS, FishySignSignal newS) {
-		if (oldS == null) {
+		if (isSelfTriggered || oldS == null) {
 			return;
 		}
 		if (! oldS.getState(0) && newS.getState(0)) {
-			this.updateOutput(new FishySignSignal(rng.nextBoolean()));
+			this.setRandomOutput();
 		}
+	}
+
+	@Override
+	protected void onSelfTriggered(int tickNumber) {
+		this.setRandomOutput();
+	}
+	
+	private void setRandomOutput() {
+		this.updateOutput(new FishySignSignal(rng.nextBoolean()));
+	}
+
+	@Override
+	public void initialize() {
+		isSelfTriggered = getOptionsFromSign().equalsIgnoreCase("S");
+		super.initialize();
+	}
+	
+	@Override
+	protected boolean allowSelfTrigger() {
+		return isSelfTriggered;
 	}
 
 }

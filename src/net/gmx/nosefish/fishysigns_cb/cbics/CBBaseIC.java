@@ -72,6 +72,15 @@ public abstract class CBBaseIC extends FishyICSign {
 		PlayerRightClickWatcher.getInstance().register(this.getID(), this.location);
 	}
 	
+	protected String getOptionsFromSign() {
+		String options = "";
+		int optionsStartIndex = this.text[1].indexOf("]") + 1;
+		if (0 < optionsStartIndex) {
+			options = this.text[1].substring(optionsStartIndex);
+		}
+		return options;
+	}
+	
 	@Override
 	public void remove() {
 		// FishyICSign will handle the removal from PlayerRightClickWatcher
