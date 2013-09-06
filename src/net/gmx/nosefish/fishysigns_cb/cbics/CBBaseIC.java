@@ -1,13 +1,16 @@
 package net.gmx.nosefish.fishysigns_cb.cbics;
 
 import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox;
+import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox.IRightClickInputHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signs.FishyICSign;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns.world.FishyLocationBlockState;
 
-public abstract class CBBaseIC extends FishyICSign {
+public abstract class CBBaseIC
+              extends FishyICSign
+           implements IRightClickInputHandler {
 	private boolean newlyCreated = false;
 
 	public CBBaseIC(UnloadedSign sign) {
@@ -85,15 +88,10 @@ public abstract class CBBaseIC extends FishyICSign {
 		return options;
 	}
 	
-	
 	@Override
 	public void handleRightClick(String playerName, FishyLocationBlockState block) {
-		if (this.getLocation().equals(block.getLocation())) {
-			FishyTask sendMsg = new MessagePlayerTask(playerName, this.getHelpText());
-			sendMsg.submit();
-		} else {
-			super.handleRightClick(playerName, block);
-		}
+		FishyTask sendMsg = new MessagePlayerTask(playerName, this.getHelpText());
+		sendMsg.submit();
 	}
 	
 	/**
