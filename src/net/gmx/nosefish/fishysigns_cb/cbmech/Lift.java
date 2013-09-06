@@ -15,13 +15,15 @@ import net.gmx.nosefish.fishylib.blocks.BlockInfo;
 import net.gmx.nosefish.fishylib.datastructures.ConcurrentMapWithTreeSet;
 import net.gmx.nosefish.fishylib.worldmath.FishyLocationInt;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
+import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox;
+import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox.IRightClickInputHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.signs.FishyRightClickSign;
+import net.gmx.nosefish.fishysigns.signs.FishySign;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns.world.FishyLocationBlockState;
 
-public class Lift extends FishyRightClickSign {
+public class Lift extends FishySign implements IRightClickInputHandler {
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {null, Pattern.compile("\\[Lift( (Up|Down))?\\]", Pattern.CASE_INSENSITIVE), null, null};
 
@@ -85,7 +87,7 @@ public class Lift extends FishyRightClickSign {
 
 	@Override
 	public void initialize() {
-		super.initialize();
+		RightClickInputBox.createAndRegister(this.getLocation(), this);
 		Lift.liftColumns.put(this.getLiftColumn(), this.location.getIntY());
 	}
 	
