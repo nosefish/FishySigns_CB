@@ -2,17 +2,18 @@ package net.gmx.nosefish.fishysigns_cb.cbics.wireless;
 
 import java.util.regex.Pattern;
 
-import net.gmx.nosefish.fishysigns.Log;
-import net.gmx.nosefish.fishysigns.activator.Activator;
-import net.gmx.nosefish.fishysigns.activator.ActivatorRadio;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.signs.plumbing.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox;
+import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox.IRadioInputHandler;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
-public class MC1111 extends CBBaseIC {
+public class MC1111 
+     extends CBBaseIC
+     implements IRadioInputHandler<FishySignSignal>{
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
@@ -20,10 +21,9 @@ public class MC1111 extends CBBaseIC {
 		null,
 		null };
 	
-	
 	// these fields are only changed once, in initialize()
-	private volatile String bandName;
 	private volatile boolean autoUpdate = false;
+	private volatile RadioAntennaInputBox<FishySignSignal> antenna;
 	
 	public MC1111(UnloadedSign sign) {
 		super(sign);
@@ -49,37 +49,38 @@ public class MC1111 extends CBBaseIC {
 		return autoUpdate;
 	}
 
-	@Override
-	protected void refresh() {
-		super.refresh();
-		if (autoUpdate) {
-			FishySignSignal signal = MC1110.tower.getLastBroadcast(bandName);
-			if (signal == null) {
-				signal = new FishySignSignal(false);
-			}
-			this.outputBox.updateOutput(signal);
-		}
-	}
+
 	
 	@Override
-	protected void onRedstoneInputChange(FishySignSignal oldS,
-			FishySignSignal newS) {
+	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
 		if (autoUpdate) {
 			// self-updating receivers ignore redstone input
 			return;
 		}
 		// rising edge triggered. A refresh does not count as a rising edge.
-		if (oldS != null && (! oldS.getState(0) && newS.getState(0))) {
+		if (oldS != newS && (! oldS.getState(0) && newS.getState(0))) {
 			this.updateOutputFromRadio();
 		}
 	}
 	
 	private void updateOutputFromRadio() {
-		FishySignSignal signal = MC1110.tower.getLastBroadcast(bandName);
+		FishySignSignal signal = antenna.getLastBroadcast();
 		if (signal == null) {
 			signal = new FishySignSignal(false);
 		}
 		this.outputBox.updateOutput(signal);
+	}
+	
+	@Override
+	public void handleRadioBroadcast(FishySignSignal signal) {
+		if (! autoUpdate) {
+			return;
+		}
+		if (signal == null) {
+			outputBox.updateOutput(new FishySignSignal(false));
+		} else {
+			outputBox.updateOutput(signal);
+		}
 	}
 	
 	@Override
@@ -104,39 +105,26 @@ public class MC1111 extends CBBaseIC {
 	@Override
 	public void initialize() {
 		autoUpdate = this.getOptionsFromSign().equalsIgnoreCase("S");
-		bandName = this.getLine(2);
+		String bandName = this.getLine(2);
 		super.initialize();
-		MC1110.tower.tuneIn(this.getID(), bandName);
+		this.initializeRadioAntenna(bandName);
+		this.refresh();
 	}
 	
-	@Override
-	public void remove() {
-		super.remove();
-		MC1110.tower.stopListening(this.getID(), bandName);
+	protected void initializeRadioAntenna(String bandName) {
+		this.antenna = RadioAntennaInputBox.createAndRegister(
+				MC1110.tower, bandName, this, FishySignSignal.class);
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void activate(Activator activator) {
-		if (!(activator instanceof ActivatorRadio<?>)) {
-			super.activate(activator);
-			return;
-		}
-		ActivatorRadio<FishySignSignal> radioActivator;
-		try {
-			radioActivator = (ActivatorRadio<FishySignSignal>) activator;
-		} catch (ClassCastException e) {
-			Log.get().logStacktrace("ActivatorRadio for MC1111 did not contain a FishySignSignal.", e);
-			return;
-		}
-		if (! bandName.equals(radioActivator.getBandName())) {
-			Log.get().logWarning("MC1111: band names do not match - expected " + bandName + 
-					", recieved " + radioActivator.getBandName());
-		}
-		FishySignSignal signal = radioActivator.getSignal();
-		if ((signal != null) && this.autoUpdate) {
+	protected void refresh() {
+		if (autoUpdate) {
+			FishySignSignal signal = this.antenna.getLastBroadcast();
+			if (signal == null) {
+				signal = new FishySignSignal(false);
+			}
 			this.outputBox.updateOutput(signal);
 		}
 	}
+
 
 }

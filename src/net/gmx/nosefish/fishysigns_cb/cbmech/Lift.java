@@ -19,6 +19,7 @@ import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signs.FishyRightClickSign;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
+import net.gmx.nosefish.fishysigns.world.FishyLocationBlockState;
 
 public class Lift extends FishyRightClickSign {
 	@FishySignIdentifier
@@ -33,36 +34,6 @@ public class Lift extends FishyRightClickSign {
 	public Lift(UnloadedSign sign) {
 		super(sign);
 		this.liftType = Lift.Type.getLiftType(sign.getText()[1]);
-	}
-
-	@Override
-	protected void onPlayerRightClick(String playerName) {
-		String message = "";
-		if (this.getLiftType().equals(Lift.Type.NONE)) {
-			message = "This is the end-point of a one-way lift.";
-		} else { 
-			// "Lift Up" or "Lift Down"
-			Integer targetY = this.getLinkedLiftY();
-			if (targetY == null) {
-				message = "This lift is not linked to another [Lift] sign.";
-			} else {
-				// move the player
-				FishyLocationInt targetSignLocation = new FishyLocationInt(
-						                                      this.location.getWorld(),
-						                                      this.location.getIntX(),
-						                                      targetY,
-						                                      this.location.getIntZ()
-				                                          );
-				// onPLayerRightClick will probably be executed in the server thread anyway,
-				// but let's do it cleanly and put the world access in a FishyTask
-				FishyTask liftPlayer = new LiftPlayerTask(playerName, targetSignLocation);
-				liftPlayer.submit();
-			}
-		}
-		if (! message.isEmpty()) {
-			FishyTask sendMsg = new MessagePlayerTask(playerName, message);
-			sendMsg.submit();
-		}
 	}
 
 	public Lift.Type getLiftType() {
@@ -119,9 +90,8 @@ public class Lift extends FishyRightClickSign {
 	}
 	
 	@Override
-	public void remove() {
+	public void onUnload() {
 		Lift.liftColumns.removeValue(this.location.getIntY());
-		super.remove();
 	}
 	
 	protected FishyLocationInt getLiftColumn() {
@@ -178,7 +148,12 @@ public class Lift extends FishyRightClickSign {
 			String message = "";
 			FishyLocationInt playerLoc = new FishyLocationInt(player.getLocation());
 			int safeY = findSafeY(playerLoc.getIntX(), targetSignLocation.getIntY(), playerLoc.getIntZ());
-			boolean isUp = safeY > playerLoc.getIntY();
+			String direction = null;
+			if (safeY > playerLoc.getIntY()) {
+				direction = "up";
+			} else if (safeY < playerLoc.getIntY()) {
+				direction = "down";
+			}
 			switch (safeY) {
 			case OBSTRUCTED:
 				message = "You would end up in a wall!";
@@ -195,7 +170,11 @@ public class Lift extends FishyRightClickSign {
 				break;
 			}
 			if (message.isEmpty()) {
-				message = "The lift moved you " + (isUp ? "up" : "down") + " a floor.";
+				if (direction == null) {
+					message = "The lift tried to move you, but you ended up in the same place.";
+				} else {
+					message = "The lift moved you " + direction + " a floor.";
+				}
 			}
 			player.message(Colors.ORANGE + message);
 		}
@@ -249,6 +228,36 @@ public class Lift extends FishyRightClickSign {
 				}
 			}
 			return NO_FLOOR;
+		}
+	}
+
+	@Override
+	public void handleRightClick(String playerName, FishyLocationBlockState block) {
+		String message = "";
+		if (this.getLiftType().equals(Lift.Type.NONE)) {
+			message = "This is the end-point of a one-way lift.";
+		} else { 
+			// "Lift Up" or "Lift Down"
+			Integer targetY = this.getLinkedLiftY();
+			if (targetY == null) {
+				message = "This lift is not linked to another [Lift] sign.";
+			} else {
+				// move the player
+				FishyLocationInt targetSignLocation = new FishyLocationInt(
+						                                      this.location.getWorld(),
+						                                      this.location.getIntX(),
+						                                      targetY,
+						                                      this.location.getIntZ()
+				                                          );
+				// onPLayerRightClick will probably be executed in the server thread anyway,
+				// but let's do it cleanly and put the world access in a FishyTask
+				FishyTask liftPlayer = new LiftPlayerTask(playerName, targetSignLocation);
+				liftPlayer.submit();
+			}
+		}
+		if (! message.isEmpty()) {
+			FishyTask sendMsg = new MessagePlayerTask(playerName, message);
+			sendMsg.submit();
 		}
 	}
 }

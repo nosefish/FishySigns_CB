@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.signs.plumbing.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
 public class MC1001 extends CBBaseIC {
@@ -41,7 +41,7 @@ public class MC1001 extends CBBaseIC {
 	}
 
 	@Override
-	protected void onRedstoneInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
 		this.updateOutput(new FishySignSignal(! newS.getState(0)));
 	}
 

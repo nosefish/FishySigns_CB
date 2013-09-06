@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import net.canarymod.Canary;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.signs.plumbing.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns.world.WorldValuePublisher;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
@@ -45,7 +45,7 @@ public class MC1025 extends CBBaseIC {
 	}
 
 	@Override
-	protected void onRedstoneInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
 		if (oldS == null) {
 			return;
 		}
@@ -54,6 +54,12 @@ public class MC1025 extends CBBaseIC {
 			this.updateOutput(new FishySignSignal(Canary.getServer().getCurrentTick() % 2 > 0));
 		}
 
+	}
+
+
+	@Override
+	protected void onUnload() {
+		// nothing to do
 	}
 
 }

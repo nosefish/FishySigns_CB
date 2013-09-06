@@ -1,12 +1,11 @@
 package net.gmx.nosefish.fishysigns_cb.cbics;
 
-import net.gmx.nosefish.fishysigns.activator.Activator;
-import net.gmx.nosefish.fishysigns.activator.ActivatorPlayerRightClick;
+import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signs.FishyICSign;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
-import net.gmx.nosefish.fishysigns.watcher.PlayerRightClickWatcher;
+import net.gmx.nosefish.fishysigns.world.FishyLocationBlockState;
 
 public abstract class CBBaseIC extends FishyICSign {
 	private boolean newlyCreated = false;
@@ -68,9 +67,13 @@ public abstract class CBBaseIC extends FishyICSign {
 			this.updateSignTextInWorld();
 		}
 		if (this.shouldRefreshOnLoad()) {
-			this.refresh();
+			inputBox.refreshHandler();
 		}
-		PlayerRightClickWatcher.getInstance().register(this.getID(), this.location);
+		initializeOnSignRightClickBox();
+	}
+	
+	protected void initializeOnSignRightClickBox() {
+		RightClickInputBox.createAndRegister(this.getLocation(), this);
 	}
 	
 	protected synchronized String getOptionsFromSign() {
@@ -82,33 +85,15 @@ public abstract class CBBaseIC extends FishyICSign {
 		return options;
 	}
 	
-	@Override
-	public void remove() {
-		// FishyICSign will handle the removal from PlayerRightClickWatcher
-		super.remove();
-	}
 	
 	@Override
-	public void activate(Activator activator) {
-		super.activate(activator);
-		if (activator instanceof ActivatorPlayerRightClick) {
-			ActivatorPlayerRightClick aprc = (ActivatorPlayerRightClick) activator;
-			if (aprc.getBlockState().getLocation().equalsLocation(this.location)) {
-				FishyTask sendMsg = new MessagePlayerTask(aprc.getPlayerName(), this.getHelpText());
-				sendMsg.submit();
-			}
+	public void handleRightClick(String playerName, FishyLocationBlockState block) {
+		if (this.getLocation().equals(block.getLocation())) {
+			FishyTask sendMsg = new MessagePlayerTask(playerName, this.getHelpText());
+			sendMsg.submit();
+		} else {
+			super.handleRightClick(playerName, block);
 		}
-	}
-	
-	/**
-	 * Calls <code>onRedstoneInputChange</code> with the current input
-	 * signal.
-	 * 
-	 * <b>Caution:</b> <code>onRedstoneInputChange</code> will be called
-	 * with a <code>null</code> oldSignal!
-	 */
-	protected void refresh() {
-		this.onRedstoneInputChange(null, inputBox.getSignal());
 	}
 	
 	/**

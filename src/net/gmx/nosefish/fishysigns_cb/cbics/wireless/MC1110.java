@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.radio.RadioTower;
-import net.gmx.nosefish.fishysigns.signs.plumbing.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
@@ -48,7 +48,7 @@ public class MC1110 extends CBBaseIC {
 	}
 	
 	@Override
-	protected void onRedstoneInputChange(FishySignSignal oldS,	FishySignSignal newS) {
+	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
 		outputBox.updateOutput(newS);
 		tower.broadcast(bandName, newS);
 	}

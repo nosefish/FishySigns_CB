@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.signs.plumbing.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseZISO;
 
 
@@ -50,7 +50,7 @@ public class MC1020 extends CBBaseZISO {
 	}
 
 	@Override
-	protected void onRedstoneInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
 		if (isSelfTriggered || oldS == null) {
 			return;
 		}
@@ -60,7 +60,7 @@ public class MC1020 extends CBBaseZISO {
 	}
 
 	@Override
-	protected void onSelfTriggered(int tickNumber) {
+	public void handleServerOddTick(int tickNumber) {
 		this.setRandomOutput();
 	}
 	
@@ -77,6 +77,12 @@ public class MC1020 extends CBBaseZISO {
 	@Override
 	protected boolean allowSelfTrigger() {
 		return isSelfTriggered;
+	}
+
+
+	@Override
+	protected void onUnload() {
+		// nothing to do
 	}
 
 }
