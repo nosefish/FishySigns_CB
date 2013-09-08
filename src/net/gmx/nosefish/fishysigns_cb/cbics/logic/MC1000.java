@@ -11,10 +11,11 @@ public class MC1000 extends CBBaseIC {
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
-		Pattern.compile("\\[MC1000\\]", Pattern.CASE_INSENSITIVE),
+		Pattern.compile("\\[MC1000\\].*", Pattern.CASE_INSENSITIVE),
 		null,
 		null
 		};
+
 
 	public MC1000(UnloadedSign sign) {
 		super(sign);
@@ -22,7 +23,7 @@ public class MC1000 extends CBBaseIC {
 	
 	@Override
 	public String getCode() {
-		return "MC1000";
+		return "[MC1000]";
 	}
 
 	@Override
@@ -36,8 +37,8 @@ public class MC1000 extends CBBaseIC {
 	}
 	
 	@Override
-	public boolean shouldRefreshOnLoad() {
-		return true;
+	protected void initializeIC() {
+		refresh();
 	}
 
 	@Override

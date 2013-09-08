@@ -3,19 +3,20 @@ package net.gmx.nosefish.fishysigns_cb.cbics.sensors;
 
 import java.util.regex.Pattern;
 
-import net.canarymod.Canary;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
+import net.gmx.nosefish.fishysigns.exception.DisabledException;
+import net.gmx.nosefish.fishysigns.plugin.engine.ServerTicker;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
-import net.gmx.nosefish.fishysigns.world.WorldValuePublisher;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
+
 
 // WTF is the use of this one?
 public class MC1025 extends CBBaseIC {
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
-		Pattern.compile("\\[MC1025\\]", Pattern.CASE_INSENSITIVE),
+		Pattern.compile("\\[MC1025\\].*", Pattern.CASE_INSENSITIVE),
 		null,
 		null};
 	
@@ -26,7 +27,7 @@ public class MC1025 extends CBBaseIC {
 
 	@Override
 	public String getCode() {
-		return "MC1025";
+		return "[MC1025]";
 	}
 
 	@Override
@@ -40,8 +41,8 @@ public class MC1025 extends CBBaseIC {
 	}
 
 	@Override
-	public boolean shouldRefreshOnLoad() {
-		return false;
+	protected void initializeIC() {
+		// nothing to do
 	}
 
 	@Override
@@ -50,8 +51,11 @@ public class MC1025 extends CBBaseIC {
 			return;
 		}
 		if (! oldS.getState(0) && newS.getState(0)) {
-			WorldValuePublisher.publish(); // we wouldn't want this important IC to get stale values
-			this.updateOutput(new FishySignSignal(Canary.getServer().getCurrentTick() % 2 > 0));
+			try {
+				this.updateOutput(new FishySignSignal((ServerTicker.getInstance().getTickCount() & 0x1) != 0));
+			} catch (DisabledException e) {
+				// I don't care. Nobody will notice anyway.
+			}
 		}
 
 	}

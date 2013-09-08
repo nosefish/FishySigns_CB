@@ -19,18 +19,24 @@ import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox.IRightClickInputHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signs.FishySign;
+import net.gmx.nosefish.fishysigns.signtools.StringTools;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns.world.FishyLocationBlockState;
 
 public class Lift extends FishySign implements IRightClickInputHandler {
 	@FishySignIdentifier
-	public static final Pattern[] regEx = {null, Pattern.compile("\\[Lift( (Up|Down))?\\]", Pattern.CASE_INSENSITIVE), null, null};
+	public static final Pattern[] regEx = {
+		null,
+		Pattern.compile("\\[Lift( (Up|Down))?\\]", Pattern.CASE_INSENSITIVE),
+		null,
+		null};
 
 	// map: (world, x, 0, z) - y values with lift signs in that column
 	protected static ConcurrentMapWithTreeSet<FishyLocationInt, Integer> 
 	                 liftColumns = new ConcurrentMapWithTreeSet<FishyLocationInt, Integer>();
 	
+	private volatile boolean isNewSign = false;
 	private final Lift.Type liftType;
 	
 	public Lift(UnloadedSign sign) {
@@ -77,6 +83,7 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 		}
 		FishyTask sendMsg = new MessagePlayerTask(playerName, message);
 		sendMsg.submit();
+		isNewSign= true;
 		return isValid;
 	}
 
@@ -89,6 +96,10 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 	public void initialize() {
 		RightClickInputBox.createAndRegister(this.getLocation(), this);
 		Lift.liftColumns.put(this.getLiftColumn(), this.location.getIntY());
+		if (isNewSign) {
+			this.setLine(1, StringTools.patternInStringToUpperCase(regEx[1], this.getLine(1)));
+			this.updateSignTextInWorld();
+		}
 	}
 	
 	@Override

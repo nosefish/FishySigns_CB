@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.radio.RadioTower;
+import net.gmx.nosefish.fishysigns.signtools.FishyParser;
 import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
@@ -14,10 +15,15 @@ public class MC1110 extends CBBaseIC {
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
-		Pattern.compile("\\[MC1110\\]", Pattern.CASE_INSENSITIVE),
+		Pattern.compile("\\[MC1110\\].*", Pattern.CASE_INSENSITIVE),
 		null,
 		null };
 	
+	protected static final String key_BAND_NAME = "BN";
+	
+	/**
+	 * The RadioTower used for broadcasting FishySignSignals
+	 */
 	public static final RadioTower<FishySignSignal> tower = new RadioTower<FishySignSignal>();
 	
 	private volatile String bandName;
@@ -28,7 +34,7 @@ public class MC1110 extends CBBaseIC {
 
 	@Override
 	public String getCode() {
-		return "MC1110";
+		return "[MC1110]";
 	}
 
 	@Override
@@ -43,8 +49,17 @@ public class MC1110 extends CBBaseIC {
 	}
 
 	@Override
-	public boolean shouldRefreshOnLoad() {
-		return true;
+	public void constructOptionRules() {
+		super.constructOptionRules();
+		icOptionRules[2].add(
+				new FishyParser.Rule(
+						FishyParser.pattern_NONEMPTY_STRING,
+						new FishyParser.Token(key_BAND_NAME)));
+	}
+	
+	@Override
+	protected void initializeIC() {
+		refresh();
 	}
 	
 	@Override
@@ -53,18 +68,14 @@ public class MC1110 extends CBBaseIC {
 		tower.broadcast(bandName, newS);
 	}
 	
-	@Override
-	public boolean validateOnLoad() {
-		return super.validateOnLoad() && (! this.getLine(2).isEmpty());
-	}
 	
 	@Override
 	public boolean validateOnCreate(String playerName) {
 		if (! super.validateOnCreate(playerName)) {
 			return false;
 		}
-		if (this.getLine(2).isEmpty()) {
-			String message = "This transmitter will not work! You must specify a band name on the 3rd line!";
+		if (! icOptions.containsKey(key_BAND_NAME)) {
+			String message = "This receiver will not work! You must specify a band name on the 3rd line!";
 			FishyTask sendMsg = new MessagePlayerTask(playerName, message);
 			sendMsg.submit();
 			return false;

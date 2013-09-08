@@ -7,22 +7,24 @@ import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
+
 public class MC1001 extends CBBaseIC {
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
-		Pattern.compile("\\[MC1001\\]", Pattern.CASE_INSENSITIVE),
+		Pattern.compile("\\[MC1001\\].*", Pattern.CASE_INSENSITIVE),
 		null,
 		null
 		};
 
+	
 	public MC1001(UnloadedSign sign) {
 		super(sign);
 	}
 
 	@Override
 	public String getCode() {
-		return "MC1001";
+		return "[MC1001]";
 	}
 
 	@Override
@@ -36,8 +38,8 @@ public class MC1001 extends CBBaseIC {
 	}
 
 	@Override
-	public boolean shouldRefreshOnLoad() {
-		return true;
+	protected void initializeIC() {
+		refresh();
 	}
 
 	@Override
