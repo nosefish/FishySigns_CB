@@ -6,6 +6,7 @@ import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.radio.RadioTower;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
+import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
 import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
@@ -53,21 +54,9 @@ public class MC1110 extends CBBaseIC {
 		super.constructOptionRules();
 		icOptionRules[2].add(
 				new FishyParser.Rule(
-						FishyParser.pattern_NONEMPTY_STRING,
+						RegExCollection.pattern_NONEMPTY_STRING,
 						new FishyParser.Token(key_BAND_NAME)));
 	}
-	
-	@Override
-	protected void initializeIC() {
-		refresh();
-	}
-	
-	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
-		outputBox.updateOutput(newS);
-		tower.broadcast(bandName, newS);
-	}
-	
 	
 	@Override
 	public boolean validateOnCreate(String playerName) {
@@ -82,10 +71,27 @@ public class MC1110 extends CBBaseIC {
 		}
 		return true;
 	}
+
+	@Override
+	public synchronized boolean validateOnLoad() {
+		if (! super.validateOnLoad()) {
+			return false;
+		}
+		if (! icOptions.containsKey(key_BAND_NAME)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	protected void initializeIC() {
+		bandName = icOptions.get(key_BAND_NAME).getValue();
+		refresh();
+	}
 	
 	@Override
-	public void initialize() {
-		bandName = this.getLine(2);
-		super.initialize();
+	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+		outputBox.updateOutput(newS);
+		tower.broadcast(bandName, newS);
 	}
 }

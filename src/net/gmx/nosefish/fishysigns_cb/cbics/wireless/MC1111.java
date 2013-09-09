@@ -8,6 +8,7 @@ import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox;
 import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox.IRadioInputHandler;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
+import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
@@ -54,11 +55,11 @@ public class MC1111
 		super.constructOptionRules();
 		icOptionRules[1].add(
 				new FishyParser.Rule(
-						FishyParser.pattern_CB_SELF_TRIGGERED,
+						RegExCollection.pattern_CB_SELF_TRIGGERED,
 						new FishyParser.Token(key_SELF_TRIGGERED)));
 		icOptionRules[2].add(
 				new FishyParser.Rule(
-						FishyParser.pattern_NONEMPTY_STRING,
+						RegExCollection.pattern_NONEMPTY_STRING,
 						new FishyParser.Token(key_BAND_NAME)));
 	}
 
@@ -72,6 +73,17 @@ public class MC1111
 			String message = "This receiver will not work! You must specify a band name on the 3rd line!";
 			FishyTask sendMsg = new MessagePlayerTask(playerName, message);
 			sendMsg.submit();
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public synchronized boolean validateOnLoad() {
+		if (! super.validateOnLoad()) {
+			return false;
+		}
+		if (! icOptions.containsKey(key_BAND_NAME)) {
 			return false;
 		}
 		return true;

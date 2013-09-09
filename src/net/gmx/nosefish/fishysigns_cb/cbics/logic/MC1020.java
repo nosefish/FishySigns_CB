@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
+import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
 import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseZISO;
 
@@ -52,7 +53,7 @@ public class MC1020 extends CBBaseZISO {
 		// self-triggered, "S" after the IC-code
 		icOptionRules[1].add(
 				new FishyParser.Rule(
-						FishyParser.pattern_CB_SELF_TRIGGERED,
+						RegExCollection.pattern_CB_SELF_TRIGGERED,
 						new FishyParser.Token(key_SELF_TRIGGERED)));
 	}
 	
