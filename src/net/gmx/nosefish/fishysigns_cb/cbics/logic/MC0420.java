@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import net.gmx.nosefish.fishysigns.Log;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
 import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
@@ -93,8 +92,6 @@ public class MC0420 extends CBBaseZISO {
 			this.updateSignTextInWorld();
 		}
 	}
-	
-
 
 	@Override
 	public void handleServerOddTick(int tick) {
@@ -103,11 +100,5 @@ public class MC0420 extends CBBaseZISO {
 			counter = 0;
 			outputBox.toggleOutput(0);
 		}
-	}
-
-	@Override
-	public void handleDirectInputChange(FishySignSignal arg0,
-			FishySignSignal arg1) {
-		// ignore redstone input
 	}
 }

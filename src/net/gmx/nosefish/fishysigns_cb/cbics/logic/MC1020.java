@@ -8,14 +8,17 @@ import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
 import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
 import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
-import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseZISO;
+import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox;
+import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHandler;
+import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
-public class MC1020 extends CBBaseZISO {
+
+public class MC1020 extends CBBaseIC implements IServerOddTickHandler {
 	final static Random rng = new Random(System.nanoTime());
 	
 	protected static final String key_SELF_TRIGGERED = "ST";
 	
-	private boolean isSelfTriggered = false;
+	protected boolean isSelfTriggered = false;
 	
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
@@ -42,7 +45,7 @@ public class MC1020 extends CBBaseZISO {
 	@Override
 	public String getHelpText() {
 		String part1 = "Logic gate: 1-bit random number generator. ";
-		String part2 = (allowSelfTrigger() ? "Self-triggered version." :
+		String part2 = (isSelfTriggered ? "Self-triggered version." :
 		                                     "Random output when input changes from low to high.");
 		return  part1 + part2;
 	}
@@ -60,11 +63,24 @@ public class MC1020 extends CBBaseZISO {
 	@Override
 	protected synchronized void initializeIC() {
 		isSelfTriggered = icOptions.containsKey(key_SELF_TRIGGERED);
+		if (isSelfTriggered) {
+			ServerOddTickInputBox.createAndRegister(this);
+		}
+	}
+
+	@Override
+	protected void initializeRSInputBox() {
+		if (icOptions.containsKey(key_SELF_TRIGGERED)) {
+			// do not create a DirectInputBox for self-triggered variant
+			return;
+		}
+		super.initializeRSInputBox();
 	}
 
 	@Override
 	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
-		if (isSelfTriggered || oldS == newS) {
+		// only called for redstone-triggered variant
+		if (oldS == newS) {
 			return;
 		}
 		if (! oldS.getState(0) && newS.getState(0)) {
@@ -74,17 +90,14 @@ public class MC1020 extends CBBaseZISO {
 
 	@Override
 	public void handleServerOddTick(int tickNumber) {
+		// only called for self-triggered variant
 		this.setRandomOutput();
 	}
 	
-	private void setRandomOutput() {
+	protected void setRandomOutput() {
 		this.updateOutput(new FishySignSignal(rng.nextBoolean()));
 	}
 
-	@Override
-	protected boolean allowSelfTrigger() {
-		return isSelfTriggered;
-	}
 
 
 	@Override

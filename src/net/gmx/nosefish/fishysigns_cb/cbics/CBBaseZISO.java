@@ -1,9 +1,17 @@
 package net.gmx.nosefish.fishysigns_cb.cbics;
 
+import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 
+/**
+ * IC that does not take any redstone input, but
+ * is triggered every second tick
+ * 
+ * @author Stefan Steinheimer (nosefish)
+ *
+ */
 public abstract class CBBaseZISO
               extends CBBaseIC
            implements IServerOddTickHandler {
@@ -15,17 +23,25 @@ public abstract class CBBaseZISO
 	@Override
 	public void initialize() {
 		super.initialize();
-		if (this.allowSelfTrigger()){
-			initializeServerOddTickInputBox();
-		}
+		initializeServerOddTickInputBox();
 	}
 	
 	protected void initializeServerOddTickInputBox() {
 		ServerOddTickInputBox.createAndRegister(this);
 	}
 	
-	//Not exactly elegant, but necessary to make dual-mode ICs easy to set up.
-	protected boolean allowSelfTrigger() {
-		return true;
+	@Override
+	protected void initializeRSInputBox() {
+		// do not create a DirectInputBox
+		return;
 	}
+	
+	@Override
+	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+		// this won't be called anyway, but we can't get rid of the interface
+		return;
+	}
+	
+	
+
 }
