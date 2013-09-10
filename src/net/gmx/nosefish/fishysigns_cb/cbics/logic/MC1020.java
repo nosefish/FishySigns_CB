@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
-import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
+import net.gmx.nosefish.fishysigns.signtools.PatternLib;
 import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHandler;
@@ -56,7 +56,7 @@ public class MC1020 extends CBBaseIC implements IServerOddTickHandler {
 		// self-triggered, "S" after the IC-code
 		icOptionRules[1].add(
 				new FishyParser.Rule(
-						RegExCollection.pattern_CB_SELF_TRIGGERED,
+						PatternLib.pattern_CB_SELF_TRIGGERED,
 						new FishyParser.Token(key_SELF_TRIGGERED)));
 	}
 	

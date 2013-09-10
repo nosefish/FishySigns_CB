@@ -8,7 +8,7 @@ import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox;
 import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox.IRadioInputHandler;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
-import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
+import net.gmx.nosefish.fishysigns.signtools.PatternLib;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
@@ -55,11 +55,11 @@ public class MC1111
 		super.constructOptionRules();
 		icOptionRules[1].add(
 				new FishyParser.Rule(
-						RegExCollection.pattern_CB_SELF_TRIGGERED,
+						PatternLib.pattern_CB_SELF_TRIGGERED,
 						new FishyParser.Token(key_SELF_TRIGGERED)));
 		icOptionRules[2].add(
 				new FishyParser.Rule(
-						RegExCollection.pattern_NONEMPTY_STRING,
+						PatternLib.pattern_NONEMPTY_STRING,
 						new FishyParser.Token(key_BAND_NAME)));
 	}
 

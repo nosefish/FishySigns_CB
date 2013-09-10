@@ -10,7 +10,7 @@ import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHan
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser.Rule;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser.Token;
-import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
+import net.gmx.nosefish.fishysigns.signtools.PatternLib;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
@@ -62,11 +62,11 @@ public class MC1422 extends CBBaseIC implements IServerOddTickHandler {
 				Pattern.compile(":"),
 				new Token(key_COLON)));
 		icOptionRules[2].add(new Rule(
-				RegExCollection.pattern_POSITIVE_INTEGER,
+				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_TICKS)));
 		// remaining ticks on last line
 		icOptionRules[3].add(new Rule(
-				RegExCollection.pattern_POSITIVE_INTEGER,
+				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_TICKS_REMAINING)));
 	}
 

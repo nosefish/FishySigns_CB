@@ -6,7 +6,7 @@ import net.gmx.nosefish.fishysigns.Log;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
-import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
+import net.gmx.nosefish.fishysigns.signtools.PatternLib;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseZISO;
 
@@ -48,7 +48,7 @@ public class MC0420 extends CBBaseZISO {
 	public void constructOptionRules() {
 		super.constructOptionRules();
 		icOptionRules[2].add(new FishyParser.Rule(
-				RegExCollection.pattern_POSITIVE_INTEGER,
+				PatternLib.pattern_POSITIVE_INTEGER,
 				new FishyParser.Token(key_DIVIDER)));
 	}
 

@@ -6,7 +6,7 @@ import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.radio.RadioTower;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
-import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
+import net.gmx.nosefish.fishysigns.signtools.PatternLib;
 import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
@@ -54,7 +54,7 @@ public class MC1110 extends CBBaseIC {
 		super.constructOptionRules();
 		icOptionRules[2].add(
 				new FishyParser.Rule(
-						RegExCollection.pattern_NONEMPTY_STRING,
+						PatternLib.pattern_NONEMPTY_STRING,
 						new FishyParser.Token(key_BAND_NAME)));
 	}
 	

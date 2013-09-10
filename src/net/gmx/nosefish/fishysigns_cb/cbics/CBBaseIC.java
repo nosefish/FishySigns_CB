@@ -31,6 +31,7 @@ public abstract class CBBaseIC
               extends FishyICSign {
 
 	/**
+	 * Access must be synchronized on "this"!
 	 * Values for lines without defined rules are empty.
 	 * Will be null after <code>initialize</code> to save memory!
 	 */

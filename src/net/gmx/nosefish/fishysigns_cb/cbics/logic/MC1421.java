@@ -9,7 +9,7 @@ import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
-import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
+import net.gmx.nosefish.fishysigns.signtools.PatternLib;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
@@ -53,7 +53,7 @@ public class MC1421 extends CBBaseIC implements IServerOddTickHandler {
 	public void constructOptionRules() {
 		super.constructOptionRules();
 		icOptionRules[2].add(new FishyParser.Rule(
-				RegExCollection.pattern_POSITIVE_INTEGER,
+				PatternLib.pattern_POSITIVE_INTEGER,
 				new FishyParser.Token(key_DIVIDER)));
 	}
 
