@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import net.gmx.nosefish.fishysigns.Log;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
@@ -114,7 +114,7 @@ public class MC1421 extends CBBaseIC implements IServerOddTickHandler {
 	}
 
 	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
 		enabled = newS.getState(0);
 	}
 }

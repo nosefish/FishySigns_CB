@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import net.canarymod.chat.TextFormat;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
 import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
@@ -68,7 +68,7 @@ public class MC1510 extends CBBaseIC {
 		}
 		if (! icOptions.containsKey(key_PLAYER)) {
 			String message = "This IC will not work! " +
-					"You must specify a player name ore BROADCAST on the 3rd line.";
+					"You must specify a player name or BROADCAST on the 3rd line.";
 			FishyTask sendMsg = new MessagePlayerTask(playerName, message);
 			sendMsg.submit();
 			return false;
@@ -106,10 +106,10 @@ public class MC1510 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
 		if (! oldS.getState(0) && newS.getState(0) && ! messageToSend.isEmpty()) {
 			FishyTask sendMsg;
-			if (str_BROADCAST.equals(playerName) ) {
+			if (str_BROADCAST.equals(playerName)) {
 				sendMsg = new MessageAllPlayersTask(messageToSend, TextFormat.WHITE);
 			} else {
 				sendMsg = new MessagePlayerTask(playerName, messageToSend, TextFormat.WHITE);

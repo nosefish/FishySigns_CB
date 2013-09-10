@@ -7,7 +7,7 @@ import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.exception.DisabledException;
 import net.gmx.nosefish.fishysigns.plugin.engine.ServerTicker;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
 
@@ -46,13 +46,14 @@ public class MC1025 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
 		if (oldS == null) {
 			return;
 		}
 		if (! oldS.getState(0) && newS.getState(0)) {
 			try {
-				this.updateOutput(new FishySignSignal((ServerTicker.getInstance().getTickCount() & 0x1) != 0));
+				this.updateOutput(IOSignal.factory(
+						(ServerTicker.getInstance().getTickCount() & 0x1) != 0));
 			} catch (DisabledException e) {
 				// I don't care. Nobody will notice anyway.
 			}

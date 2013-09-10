@@ -7,7 +7,7 @@ import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
 import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHandler;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
@@ -78,7 +78,7 @@ public class MC1020 extends CBBaseIC implements IServerOddTickHandler {
 	}
 
 	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
 		// only called for redstone-triggered variant
 		if (oldS == newS) {
 			return;
@@ -95,7 +95,7 @@ public class MC1020 extends CBBaseIC implements IServerOddTickHandler {
 	}
 	
 	protected void setRandomOutput() {
-		this.updateOutput(new FishySignSignal(rng.nextBoolean()));
+		this.updateOutput(IOSignal.factory(rng.nextBoolean()));
 	}
 
 

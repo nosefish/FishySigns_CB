@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import net.gmx.nosefish.fishylib.worldmath.FishyLocationInt;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.LeverIOBox;
 
 
@@ -59,7 +59,7 @@ public class MC2020 extends MC1020 {
 	@Override
 	protected void setRandomOutput() {
 		// 3 outputs
-		this.updateOutput(new FishySignSignal(
+		this.updateOutput(IOSignal.factory(
 				rng.nextBoolean(),
 				rng.nextBoolean(),
 				rng.nextBoolean()));

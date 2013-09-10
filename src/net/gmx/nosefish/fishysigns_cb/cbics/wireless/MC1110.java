@@ -7,7 +7,7 @@ import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
 import net.gmx.nosefish.fishysigns.radio.RadioTower;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
 import net.gmx.nosefish.fishysigns.signtools.RegExCollection;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.task.FishyTask;
 import net.gmx.nosefish.fishysigns.task.common.MessagePlayerTask;
 import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
@@ -23,9 +23,9 @@ public class MC1110 extends CBBaseIC {
 	protected static final String key_BAND_NAME = "BN";
 	
 	/**
-	 * The RadioTower used for broadcasting FishySignSignals
+	 * The RadioTower used for broadcasting IOSignals
 	 */
-	public static final RadioTower<FishySignSignal> tower = new RadioTower<FishySignSignal>();
+	public static final RadioTower<IOSignal> tower = new RadioTower<IOSignal>();
 	
 	private volatile String bandName;
 
@@ -90,7 +90,7 @@ public class MC1110 extends CBBaseIC {
 	}
 	
 	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
 		outputBox.updateOutput(newS);
 		tower.broadcast(bandName, newS);
 	}

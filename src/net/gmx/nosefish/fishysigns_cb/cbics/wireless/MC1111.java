@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox;
 import net.gmx.nosefish.fishysigns.iobox.RadioAntennaInputBox.IRadioInputHandler;
 import net.gmx.nosefish.fishysigns.signtools.FishyParser;
@@ -15,7 +15,7 @@ import net.gmx.nosefish.fishysigns_cb.cbics.CBBaseIC;
 
 public class MC1111
      extends CBBaseIC
-  implements IRadioInputHandler<FishySignSignal>{
+  implements IRadioInputHandler<IOSignal>{
 	
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
@@ -29,7 +29,7 @@ public class MC1111
 	
 	// these fields are only changed once, in initialize()
 	private volatile boolean autoUpdate = false;
-	private volatile RadioAntennaInputBox<FishySignSignal> antenna;
+	private volatile RadioAntennaInputBox<IOSignal> antenna;
 	
 	public MC1111(UnloadedSign sign) {
 		super(sign);
@@ -103,19 +103,19 @@ public class MC1111
 	
 	protected void initializeRadioAntenna(String bandName) {
 		this.antenna = RadioAntennaInputBox.createAndRegister(
-				MC1110.tower, bandName, this, FishySignSignal.class);
+				MC1110.tower, bandName, this, IOSignal.class);
 	}
 
 	protected void refresh() {
-		FishySignSignal signal = this.antenna.getLastBroadcast();
+		IOSignal signal = this.antenna.getLastBroadcast();
 		if (signal == null) {
-			signal = new FishySignSignal(false);
+			signal = IOSignal.L;
 		}
 		this.outputBox.updateOutput(signal);
 	}
 
 	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
 		if (autoUpdate) {
 			// self-updating receivers ignore redstone input
 			return;
@@ -127,21 +127,21 @@ public class MC1111
 	}
 	
 	@Override
-	public void handleRadioBroadcast(FishySignSignal signal) {
+	public void handleRadioBroadcast(IOSignal signal) {
 		if (! autoUpdate) {
 			return;
 		}
 		if (signal == null) {
-			outputBox.updateOutput(new FishySignSignal(false));
+			outputBox.updateOutput(IOSignal.L);
 		} else {
 			outputBox.updateOutput(signal);
 		}
 	}
 
 	private void updateOutputFromRadio() {
-		FishySignSignal signal = antenna.getLastBroadcast();
+		IOSignal signal = antenna.getLastBroadcast();
 		if (signal == null) {
-			signal = new FishySignSignal(false);
+			signal = IOSignal.L;
 		}
 		this.outputBox.updateOutput(signal);
 	}

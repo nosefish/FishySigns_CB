@@ -1,6 +1,6 @@
 package net.gmx.nosefish.fishysigns_cb.cbics;
 
-import net.gmx.nosefish.fishysigns.iobox.FishySignSignal;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.ServerOddTickInputBox.IServerOddTickHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
@@ -31,13 +31,19 @@ public abstract class CBBaseZISO
 	}
 	
 	@Override
+	protected void refresh() {
+		// avoid NPE
+		return;
+	}
+	
+	@Override
 	protected void initializeRSInputBox() {
 		// do not create a DirectInputBox
 		return;
 	}
 	
 	@Override
-	public void handleDirectInputChange(FishySignSignal oldS, FishySignSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
 		// this won't be called anyway, but we can't get rid of the interface
 		return;
 	}
