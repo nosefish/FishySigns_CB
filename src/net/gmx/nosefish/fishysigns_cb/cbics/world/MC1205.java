@@ -113,7 +113,6 @@ public class MC1205 extends CBBaseIC {
 		}
 		force = icOptions.containsKey(key_FORCE);
 			target = findTarget();
-		this.refresh(); //TODO is this really the desired behaviour?
 	}
 
 	protected FishyLocationInt findTarget() {
