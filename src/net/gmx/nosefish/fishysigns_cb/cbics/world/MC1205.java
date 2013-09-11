@@ -108,12 +108,12 @@ public class MC1205 extends CBBaseIC {
 				blockData = (short) Short.parseShort(icOptions.get(key_BLOCK_DATA).getValue());
 			}
 		} catch(NumberFormatException e) {
-			Log.get().logStacktrace("Some silly bugger entered bogus values on an IC sign. Location: "
-			                       + this.getLocation().toString(), e);
+			Log.get().logWarning("Some silly bugger entered bogus values on an IC sign. Location: "
+			                       + this.getLocation().toString());
 		}
 		force = icOptions.containsKey(key_FORCE);
 			target = findTarget();
-		this.refresh();
+		this.refresh(); //TODO is this really the desired behaviour?
 	}
 
 	protected FishyLocationInt findTarget() {

@@ -39,6 +39,4 @@ public class MC1206 extends MC1205 {
 				.addIntVector(BACK.toUnitIntVector())
 				.addIntVector(FishyDirection.DOWN.toUnitIntVector());
 	}
-	
-
 }
