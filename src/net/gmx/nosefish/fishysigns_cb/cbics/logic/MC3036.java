@@ -11,7 +11,7 @@ public class MC3036 extends CBBase3ISO {
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {
 		null,
-		Pattern.compile("\\[MC3034\\].*", Pattern.CASE_INSENSITIVE),
+		Pattern.compile("\\[MC3036\\].*", Pattern.CASE_INSENSITIVE),
 		null,
 		null
 	};
