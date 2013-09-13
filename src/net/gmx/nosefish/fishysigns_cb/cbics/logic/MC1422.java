@@ -119,18 +119,16 @@ public class MC1422 extends CBBaseIC implements IServerOddTickHandler {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
-		if (risingEgde && ! oldS.getState(0) && newS.getState(0)) {
-			updateOutput(IOSignal.H);
-			ticksRemaining = ticks;
-		} else if (! risingEgde && oldS.getState(0) && ! newS.getState(0)) {
-			updateOutput(IOSignal.H);
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
+		if (   (  risingEgde && isRisingEdge(oldS, newS, 0))
+			|| (! risingEgde && isFallingEdge(oldS, newS, 0))) {
+			this.updateOutput(IOSignal.H, tickStamp);
 			ticksRemaining = ticks;
 		}
 	}
 
 	@Override
-	public void handleServerOddTick(int arg0) {
+	public void handleServerOddTick(long tick) {
 		if (ticksRemaining <= 0) {
 			return;
 		}
@@ -140,7 +138,7 @@ public class MC1422 extends CBBaseIC implements IServerOddTickHandler {
 		this.setLine(3, Integer.toString(ticksRemaining));
 		this.updateSignTextInWorld();
 		if (ticksRemaining == 0) {
-			updateOutput(IOSignal.L);
+			this.updateOutput(IOSignal.L, tick);
 		}
 	}
 

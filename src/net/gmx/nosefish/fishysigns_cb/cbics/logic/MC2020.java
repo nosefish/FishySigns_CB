@@ -57,11 +57,11 @@ public class MC2020 extends MC1020 {
 	}
 	
 	@Override
-	protected void setRandomOutput() {
+	protected void setRandomOutput(long tickStamp) {
 		// 3 outputs
 		this.updateOutput(IOSignal.factory(
 				rng.nextBoolean(),
 				rng.nextBoolean(),
-				rng.nextBoolean()));
+				rng.nextBoolean()), tickStamp);
 	}
 }

@@ -42,14 +42,14 @@ public class MC3036 extends CBBase3ISO {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		boolean clk = newS.getState(0);
 		boolean D = newS.getState(1);
 		boolean reset = newS.getState(2);
 		if (reset) {
-			updateOutput(IOSignal.L);
+			updateOutput(IOSignal.L, tickStamp);
 		} else if (clk) {
-           updateOutput(IOSignal.factory(D));
+           updateOutput(IOSignal.factory(D), tickStamp);
         }
 	}
 

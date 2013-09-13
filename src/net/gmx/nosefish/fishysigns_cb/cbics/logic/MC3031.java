@@ -45,15 +45,15 @@ public class MC3031 extends CBBase3ISO {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		boolean set = newS.getState(0);
 		boolean reset = newS.getState(1);
         if (!set && !reset) {
-        	updateOutput(IOSignal.H);
+        	updateOutput(IOSignal.H, tickStamp);
         } else if (set && !reset) {
-        	updateOutput(IOSignal.L);
+        	updateOutput(IOSignal.L, tickStamp);
         } else if (!set && reset) {
-        	updateOutput(IOSignal.H);
+        	updateOutput(IOSignal.H, tickStamp);
         }
 	}
 

@@ -43,8 +43,8 @@ public class MC1001 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
-		this.updateOutput(newS.getInverse());
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
+		this.updateOutput(newS.getInverse(), tickStamp);
 	}
 
 }

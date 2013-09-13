@@ -46,14 +46,14 @@ public class MC1025 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		if (oldS == null) {
 			return;
 		}
 		if (! oldS.getState(0) && newS.getState(0)) {
 			try {
 				this.updateOutput(IOSignal.factory(
-						(ServerTicker.getInstance().getTickCount() & 0x1) != 0));
+						(ServerTicker.getInstance().getTickCount() & 0x1) != 0), tickStamp);
 			} catch (DisabledException e) {
 				// I don't care. Nobody will notice anyway.
 			}

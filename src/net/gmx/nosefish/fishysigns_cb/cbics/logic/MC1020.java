@@ -69,33 +69,33 @@ public class MC1020 extends CBBaseIC implements IServerOddTickHandler {
 	}
 
 	@Override
-	protected void initializeRSInputBox() {
+	protected void initializeDirectInputBox() {
 		if (icOptions.containsKey(key_SELF_TRIGGERED)) {
 			// do not create a DirectInputBox for self-triggered variant
 			return;
 		}
-		super.initializeRSInputBox();
+		super.initializeDirectInputBox();
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		// only called for redstone-triggered variant
 		if (oldS == newS) {
 			return;
 		}
 		if (! oldS.getState(0) && newS.getState(0)) {
-			this.setRandomOutput();
+			this.setRandomOutput(tickStamp);
 		}
 	}
 
 	@Override
-	public void handleServerOddTick(int tickNumber) {
+	public void handleServerOddTick(long tickNumber) {
 		// only called for self-triggered variant
-		this.setRandomOutput();
+		this.setRandomOutput(tickNumber - CBBaseIC.DEFAULT_DELAY);
 	}
 	
-	protected void setRandomOutput() {
-		this.updateOutput(IOSignal.factory(rng.nextBoolean()));
+	protected void setRandomOutput(long tickStamp) {
+		this.updateOutput(IOSignal.factory(rng.nextBoolean()), tickStamp);
 	}
 
 

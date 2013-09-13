@@ -90,8 +90,8 @@ public class MC1110 extends CBBaseIC {
 	}
 	
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
-		outputBox.updateOutput(newS);
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
+		this.updateOutput(newS, tickStamp);
 		tower.broadcast(bandName, newS);
 	}
 }

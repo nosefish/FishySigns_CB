@@ -193,8 +193,8 @@ public class MC1207 extends CBBaseIC {
 	}
 	
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
-		updateOutput(newS);
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
+		updateOutput(newS, tickStamp);
 		if (isRisingEdge(oldS, newS, 0)) {
 			FishyTask setter = new SetBlockTask(blockId, blockData, true, target);
 			setter.submit();

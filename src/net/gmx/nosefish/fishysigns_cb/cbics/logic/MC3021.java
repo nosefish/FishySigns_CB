@@ -42,9 +42,9 @@ public class MC3021 extends CBBase3ISO {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		boolean xnor = newS.getState(0) == newS.getState(1);
-		this.updateOutput(IOSignal.factory(xnor));
+		this.updateOutput(IOSignal.factory(xnor), tickStamp);
 	}
 
 }

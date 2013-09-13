@@ -94,11 +94,11 @@ public class MC0420 extends CBBaseZISO {
 	}
 
 	@Override
-	public void handleServerOddTick(int tick) {
+	public void handleServerOddTick(long tick) {
 		counter ++;
 		if (counter >= divider) {
 			counter = 0;
-			outputBox.toggleOutput(0);
+			this.toggleOutput(0, tick);
 		}
 	}
 }

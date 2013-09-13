@@ -101,7 +101,7 @@ public class MC1421 extends CBBaseIC implements IServerOddTickHandler {
 	
 
 	@Override
-	public void handleServerOddTick(int tick) {
+	public void handleServerOddTick(long tick) {
 		if (! enabled) {
 			// input is low
 			return;
@@ -109,12 +109,12 @@ public class MC1421 extends CBBaseIC implements IServerOddTickHandler {
 		counter ++;
 		if (counter >= divider) {
 			counter = 0;
-			outputBox.toggleOutput(0);
+			this.toggleOutput(0, tick);
 		}
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		enabled = newS.getState(0);
 	}
 }

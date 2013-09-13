@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.gmx.nosefish.fishysigns.anchor.IAnchorable;
+import net.gmx.nosefish.fishysigns.iobox.IOSignal;
 import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox;
 import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox.IRightClickInputHandler;
 import net.gmx.nosefish.fishysigns.plugin.engine.UnloadedSign;
@@ -42,6 +43,8 @@ public abstract class CBBaseIC
 		new ArrayList<Rule>(1),
 		new ArrayList<Rule>(1)
 		};
+	
+	public static final long DEFAULT_DELAY = 2L;
 	
 	/**
 	 * Access must be synchronized on "this"!
@@ -242,13 +245,32 @@ public abstract class CBBaseIC
 	}
 
 	/**
-	 * Calls the <code>refreshHandler</code> method of the <code>inputBox</code>
+	 * Calls the <code>refreshHandler</code> method of the <code>inputBox</code>.
  	 * When called, the handleDirectInput method will be called
 	 * with the current input signal for both <code>oldSignal</code>
 	 * and <code>newSignal</code> (same instance of FishySignSignal).
 	 */
 	protected void refresh() {
 		inputBox.refreshHandler();
+	}
+	
+	protected void updateOutput(IOSignal signal, long inputEventTickStamp) {
+		long targetTick = inputEventTickStamp + DEFAULT_DELAY;
+		this.getOutputBox().updateOutputOnTick(signal, targetTick);
+	}
+	
+	protected void updateOutputNow(IOSignal signal) {
+		this.getOutputBox().updateOutputNow(signal);
+	}
+	
+	protected void toggleOutput(int pin, long inputEventTickStamp) {
+		long targetTick = inputEventTickStamp + DEFAULT_DELAY;
+		this.getOutputBox().toggleOutputOnTick(pin, targetTick);
+		
+	}
+	
+	protected void toggleOutputNow(int pin) {
+		this.getOutputBox().toggleOutputNow(pin);
 	}
 	
 	/**

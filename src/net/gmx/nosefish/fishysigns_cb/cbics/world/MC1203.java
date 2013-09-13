@@ -103,7 +103,7 @@ public class MC1203 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		if (isRisingEdge(oldS, newS, 0)) {
 			CircleLightningTask lightningTask = new CircleLightningTask(target, radius, chance, true);
 			lightningTask.submit();

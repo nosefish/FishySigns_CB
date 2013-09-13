@@ -11,7 +11,7 @@ public abstract class CBBase3ISO extends CBBaseIC {
 	}
 
 	@Override
-	protected void initializeRSInputBox() {
+	protected void initializeDirectInputBox() {
 		FishyLocationInt[] inputLocations = this.getInputLocations();
 		if (inputLocations.length != 3) {
 			throw new InputLocationExeption("Invalid number of input locations: expected 3, but has"

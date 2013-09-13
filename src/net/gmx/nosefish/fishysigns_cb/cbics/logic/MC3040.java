@@ -43,12 +43,12 @@ public class MC3040 extends CBBase3ISO {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		boolean in1 = newS.getState(0);
 		boolean in2 = newS.getState(1);
 		boolean sel = newS.getState(2);
 		boolean out = sel ? in1 : in2;
-        updateOutput(IOSignal.factory(out));
+        updateOutput(IOSignal.factory(out), tickStamp);
 	}
 
 }

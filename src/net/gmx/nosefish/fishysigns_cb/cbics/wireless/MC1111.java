@@ -111,18 +111,18 @@ public class MC1111
 		if (signal == null) {
 			signal = IOSignal.L;
 		}
-		this.outputBox.updateOutput(signal);
+		this.updateOutputNow(signal);
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		if (autoUpdate) {
 			// self-updating receivers ignore redstone input
 			return;
 		}
 		// rising edge triggered. A refresh does not count as a rising edge.
 		if (oldS != newS && (! oldS.getState(0) && newS.getState(0))) {
-			this.updateOutputFromRadio();
+			this.updateOutputFromRadio(tickStamp);
 		}
 	}
 	
@@ -132,18 +132,18 @@ public class MC1111
 			return;
 		}
 		if (signal == null) {
-			outputBox.updateOutput(IOSignal.L);
+			this.updateOutputNow(IOSignal.L);
 		} else {
-			outputBox.updateOutput(signal);
+			this.updateOutputNow(signal);
 		}
 	}
 
-	private void updateOutputFromRadio() {
+	private void updateOutputFromRadio(long tickStamp) {
 		IOSignal signal = antenna.getLastBroadcast();
 		if (signal == null) {
 			signal = IOSignal.L;
 		}
-		this.outputBox.updateOutput(signal);
+		this.updateOutput(signal, tickStamp);
 	}
 
 

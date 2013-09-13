@@ -43,13 +43,13 @@ public class MC1017 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		if (oldS == newS) {
 			// refresh - shouldn't happen anyway
 			return;
 		}
 		if (! oldS.getState(0) && newS.getState(0)) {
-			outputBox.toggleOutput(0);
+			this.toggleOutput(0, tickStamp);
 		}
 	}
 

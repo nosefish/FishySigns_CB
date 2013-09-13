@@ -41,9 +41,9 @@ public class MC3020 extends CBBase3ISO {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		boolean xor = newS.getState(0) != newS.getState(1);
-		this.updateOutput(IOSignal.factory(xor));
+		this.updateOutput(IOSignal.factory(xor), tickStamp);
 	}
 
 }

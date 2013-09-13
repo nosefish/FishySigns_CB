@@ -106,7 +106,7 @@ public class MC1510 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		if (! oldS.getState(0) && newS.getState(0) && ! messageToSend.isEmpty()) {
 			FishyTask sendMsg;
 			if (str_BROADCAST.equals(playerName)) {

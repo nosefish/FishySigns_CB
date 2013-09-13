@@ -122,7 +122,7 @@ public class MC1205 extends CBBaseIC {
 	}
 	
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 			if (newS.getState(0)) {
 				FishyTask setBlock = new SetBlockTask(blockId, blockData, force, target);
 				setBlock.submit();

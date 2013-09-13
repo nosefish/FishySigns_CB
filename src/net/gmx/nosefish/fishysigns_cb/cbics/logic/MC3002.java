@@ -43,10 +43,10 @@ public class MC3002 extends CBBase3ISO {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		// AND the inputs
 		boolean and = newS.getState(0) && newS.getState(1) && newS.getState(2);
-		this.updateOutput(IOSignal.factory(and));
+		this.updateOutput(IOSignal.factory(and), tickStamp);
 	}
 
 }

@@ -37,13 +37,13 @@ public abstract class CBBaseZISO
 	}
 	
 	@Override
-	protected void initializeRSInputBox() {
+	protected void initializeDirectInputBox() {
 		// do not create a DirectInputBox
 		return;
 	}
 	
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		// this won't be called anyway, but we can't get rid of the interface
 		return;
 	}

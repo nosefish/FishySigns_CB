@@ -46,17 +46,17 @@ public class MC3032 extends CBBase3ISO {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
         boolean j = newS.getState(1); //Set
         boolean k = newS.getState(2); //Reset
         boolean clk = isFallingEdge(oldS, newS, 0);
         if (clk) {
             if (j && k) {
-                outputBox.toggleOutput(0);
+                this.toggleOutput(0, tickStamp);
             } else if (j && !k) {
-            	updateOutput(IOSignal.H);
+            	this.updateOutput(IOSignal.H, tickStamp);
             } else if (!j && k) {
-            	updateOutput(IOSignal.L);
+            	this.updateOutput(IOSignal.L, tickStamp);
             }
         }
 	}

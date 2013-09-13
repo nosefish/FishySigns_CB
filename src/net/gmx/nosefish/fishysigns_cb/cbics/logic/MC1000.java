@@ -42,10 +42,7 @@ public class MC1000 extends CBBaseIC {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS,
-			IOSignal newS) {
-		this.updateOutput(newS);
+	public void handleDirectInputChange(IOSignal oldS,IOSignal newS, long tickStamp) {
+		this.updateOutput(newS, tickStamp);
 	}
-
-
 }

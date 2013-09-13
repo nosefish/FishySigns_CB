@@ -44,9 +44,9 @@ public static final Pattern[] regEx = {
 	}
 
 	@Override
-	public void handleDirectInputChange(IOSignal oldS, IOSignal newS) {
+	public void handleDirectInputChange(IOSignal oldS, IOSignal newS, long tickStamp) {
 		boolean nand = !(newS.getState(0) || newS.getState(1) || newS.getState(2));
-		updateOutput(IOSignal.factory(nand));
+		updateOutput(IOSignal.factory(nand), tickStamp);
 	}
 
 }
