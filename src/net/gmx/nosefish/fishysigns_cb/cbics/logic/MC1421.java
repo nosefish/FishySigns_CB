@@ -97,6 +97,7 @@ public class MC1421 extends CBBaseIC implements IServerOddTickHandler {
 			this.updateSignTextInWorld();
 		}
 		ServerOddTickInputBox.createAndRegister(this);
+		this.refresh();
 	}
 	
 
