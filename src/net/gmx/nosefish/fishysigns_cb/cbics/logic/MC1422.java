@@ -110,9 +110,9 @@ public class MC1422 extends CBBaseIC implements IServerOddTickHandler {
 			}
 			risingEgde = "H".equals(icOptions.get(key_HILO).getValue()); 
 		} catch (NullPointerException e) {
-			Log.get().logStacktrace("One of the required options did not exist", e);
+			Log.get().trace("One of the required options did not exist", e);
 		} catch (NumberFormatException e) {
-			Log.get().logStacktrace("Option key_TICKS or key_TICKS_REMAINING not a valid integer", e);
+			Log.get().trace("Option key_TICKS or key_TICKS_REMAINING not a valid integer", e);
 		}
 		ServerOddTickInputBox.createAndRegister(this);
 		

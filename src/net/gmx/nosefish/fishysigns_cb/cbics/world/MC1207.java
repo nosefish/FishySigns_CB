@@ -162,7 +162,7 @@ public class MC1207 extends CBBaseIC {
 				blockData = Short.parseShort(icOptions.get(key_BLOCK_DATA).getValue());
 			}
 		} catch(NumberFormatException e) {
-			Log.get().logWarning("Some silly bugger entered bogus values on an IC sign. Location: "
+			Log.get().warn("Some silly bugger entered bogus values on an IC sign. Location: "
 			                       + this.getLocation().toString());
 			this.anchorRaised(this); // detach all i/o-boxes
 		}

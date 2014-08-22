@@ -108,7 +108,7 @@ public class MC1205 extends CBBaseIC {
 				blockData = (short) Short.parseShort(icOptions.get(key_BLOCK_DATA).getValue());
 			}
 		} catch(NumberFormatException e) {
-			Log.get().logWarning("Some silly bugger entered bogus values on an IC sign. Location: "
+			Log.get().warn("Some silly bugger entered bogus values on an IC sign. Location: "
 			                       + this.getLocation().toString());
 		}
 		force = icOptions.containsKey(key_FORCE);

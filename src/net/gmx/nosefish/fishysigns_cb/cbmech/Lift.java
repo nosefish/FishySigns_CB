@@ -12,7 +12,7 @@ import net.canarymod.api.world.blocks.Sign;
 import net.canarymod.api.world.blocks.TileEntity;
 import net.canarymod.chat.Colors;
 import net.gmx.nosefish.fishylib.blocks.BlockInfo;
-import net.gmx.nosefish.fishylib.datastructures.ConcurrentMapWithTreeSet;
+import net.gmx.nosefish.fishylib.datastructures.ConcurrentMapWithSet;
 import net.gmx.nosefish.fishylib.worldmath.FishyLocationInt;
 import net.gmx.nosefish.fishysigns.annotation.FishySignIdentifier;
 import net.gmx.nosefish.fishysigns.iobox.RightClickInputBox;
@@ -33,12 +33,12 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 		null};
 
 	// map: (world, x, 0, z) - y values with lift signs in that column
-	protected static ConcurrentMapWithTreeSet<FishyLocationInt, Integer> 
-	                 liftColumns = new ConcurrentMapWithTreeSet<FishyLocationInt, Integer>();
-	
+	protected static ConcurrentMapWithSet<FishyLocationInt, Integer>
+	                 liftColumns = new ConcurrentMapWithSet<>();
+
 	private volatile boolean isNewSign = false;
 	private final Lift.Type liftType;
-	
+
 	public Lift(UnloadedSign sign) {
 		super(sign);
 		this.liftType = Lift.Type.getLiftType(sign.getText()[1]);
@@ -47,11 +47,12 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 	public Lift.Type getLiftType() {
 		return this.liftType;
 	}
-	
+
 	public Integer getLinkedLiftY() {
-		Integer myY = this.location.getIntY(); 
-		Integer targetY = null;
-		SortedSet<Integer> liftsInColumn = new TreeSet<Integer>(Lift.liftColumns.get(this.getLiftColumn()));
+		Integer myY = this.location.getIntY();
+		Integer targetY;
+		SortedSet<Integer> liftsInColumn = new TreeSet<>(
+            Lift.liftColumns.get(this.getLiftColumn()));
 		switch (this.liftType) {
 		case UP:
 			// lowest above
@@ -92,66 +93,69 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 		return this.isWallSign();
 	}
 
-	@Override
-	public void initialize() {
-		RightClickInputBox.createAndRegister(this.getLocation(), this);
-		Lift.liftColumns.put(this.getLiftColumn(), this.location.getIntY());
-		if (isNewSign) {
-			this.setLine(1, StringTools.patternInStringToUpperCase(regEx[1], this.getLine(1)));
-			this.updateSignTextInWorld();
-		}
-	}
-	
+    @Override
+    public void initialize() {
+        RightClickInputBox.createAndRegister(this.getLocation(), this);
+        Lift.liftColumns.put(this.getLiftColumn(), this.location.getIntY());
+        if (isNewSign) {
+            this.setLine(1, StringTools.patternInStringToUpperCase(regEx[1], this.getLine(1)));
+            this.updateSignTextInWorld();
+        }
+    }
+
 	@Override
 	public void onUnload() {
 		Lift.liftColumns.removeValue(this.location.getIntY());
 	}
-	
+
 	protected FishyLocationInt getLiftColumn() {
 		return new FishyLocationInt(this.location.getWorld(),
 				                    this.location.getIntX(),
 				                    0,
 				                    this.location.getIntZ());
 	}
-	
+
 	public static enum Type{
 		UP(Pattern.compile("\\[Lift Up\\]", Pattern.CASE_INSENSITIVE)),
         DOWN(Pattern.compile("\\[Lift Down\\]", Pattern.CASE_INSENSITIVE)),
         NONE(Pattern.compile("\\[Lift\\]", Pattern.CASE_INSENSITIVE));
 		private Pattern regEx;
-		
+
 		private Type(Pattern p) {
 			this.regEx = p;
 		}
-		
+
 		public static Type getLiftType(String str){
 			for (Type t : Type.values()) {
 				if (t.regEx.matcher(str).matches()) {
 					return t;
 				}
 			}
-			throw new IllegalArgumentException("String does not specify a lift: " + str);
+			throw new IllegalArgumentException(
+                "String does not specify a lift: " + str);
 		}
 	};
-	
+
 	/**
 	 * Does the dirty work for the [Lift] sign in the server thread.
-	 * 
+	 *
 	 * @author Stefan Steinheimer (nosefish)
 	 *
 	 */
 	public static class LiftPlayerTask extends FishyTask {
 		private static final int OBSTRUCTED = -1;
 		private static final int NO_FLOOR = -2;
-		private static final String NO_SIGN_MESSAGE = "The linked lift sign has mysteriously disappeared.";
+		private static final String NO_SIGN_MESSAGE =
+            "The linked lift sign has mysteriously disappeared.";
 		private final String playerName;
 		private final FishyLocationInt targetSignLocation;
-		
-		public LiftPlayerTask(String playerName, FishyLocationInt targetSignLocation) {
+
+		public LiftPlayerTask(String playerName,
+                              FishyLocationInt targetSignLocation) {
 			this.playerName = playerName;
 			this.targetSignLocation = targetSignLocation;
 		}
-		
+
 		@Override
 		public void doStuff() {
 			Player player = Canary.getServer().getPlayer(playerName);
@@ -159,8 +163,11 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 				return;
 			}
 			String message = "";
-			FishyLocationInt playerLoc = new FishyLocationInt(player.getLocation());
-			int safeY = findSafeY(playerLoc.getIntX(), targetSignLocation.getIntY(), playerLoc.getIntZ());
+			FishyLocationInt playerLoc = new FishyLocationInt(
+                player.getLocation());
+			int safeY = findSafeY(playerLoc.getIntX(),
+                                  targetSignLocation.getIntY(),
+                                  playerLoc.getIntZ());
 			String direction = null;
 			if (safeY > playerLoc.getIntY()) {
 				direction = "up";
@@ -176,10 +183,15 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 				break;
 			default:
 				message = getFloorMessage();
-				if (message == NO_SIGN_MESSAGE) {
+				if (message.equals(NO_SIGN_MESSAGE)) {
 					break;
 				}
-				player.teleportTo(player.getX(), (double)safeY, player.getZ(), player.getPitch(), player.getRotation(), player.getWorld());
+				player.teleportTo(player.getX(),
+                                  (double)safeY,
+                                  player.getZ(),
+                                  player.getPitch(),
+                                  player.getRotation(),
+                                  player.getWorld());
 				break;
 			}
 			if (message.isEmpty()) {
@@ -191,7 +203,7 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 			}
 			player.message(Colors.ORANGE + message);
 		}
-		
+
 		private String getFloorMessage() {
 			String message = "";
 			World world = this.targetSignLocation.getWorld().getWorldIfLoaded();
@@ -211,7 +223,7 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 			}
 			return message;
 		}
-		
+
 		private int findSafeY(int x, int y, int z) {
 			World world = targetSignLocation.getWorld().getWorldIfLoaded();
 			int freeBlocks = 0;
@@ -249,22 +261,22 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 		String message = "";
 		if (this.getLiftType().equals(Lift.Type.NONE)) {
 			message = "This is the end-point of a one-way lift.";
-		} else { 
+		} else {
 			// "Lift Up" or "Lift Down"
 			Integer targetY = this.getLinkedLiftY();
 			if (targetY == null) {
 				message = "This lift is not linked to another [Lift] sign.";
 			} else {
 				// move the player
-				FishyLocationInt targetSignLocation = new FishyLocationInt(
-						                                      this.location.getWorld(),
-						                                      this.location.getIntX(),
-						                                      targetY,
-						                                      this.location.getIntZ()
-				                                          );
-				// onPLayerRightClick will probably be executed in the server thread anyway,
-				// but let's do it cleanly and put the world access in a FishyTask
-				FishyTask liftPlayer = new LiftPlayerTask(playerName, targetSignLocation);
+				FishyLocationInt targetSignLocation = 
+                    new FishyLocationInt(
+                        this.location.getWorld(),
+                        this.location.getIntX(),
+                        targetY,
+                        this.location.getIntZ()
+                    );
+				FishyTask liftPlayer = new LiftPlayerTask(playerName, 
+                                                          targetSignLocation);
 				liftPlayer.submit();
 			}
 		}

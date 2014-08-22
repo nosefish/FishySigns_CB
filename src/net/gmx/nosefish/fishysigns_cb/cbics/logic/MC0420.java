@@ -82,9 +82,9 @@ public class MC0420 extends CBBaseZISO {
 		try {
 			divider = Integer.parseInt(icOptions.get(key_DIVIDER).getValue());
 		} catch (NumberFormatException e) {
-			Log.get().logStacktrace("DIVIDER option is not an int! Check the validateOnX methods!", e);
+			Log.get().trace("DIVIDER option is not an int! Check the validateOnX methods!", e);
 		} catch (NullPointerException e) {
-			Log.get().logStacktrace("DIVIDER option is null! Check the validateOnX methods!", e);
+			Log.get().trace("DIVIDER option is null! Check the validateOnX methods!", e);
 		}
 		if (divider < MIN_RATE) {
 			divider = MIN_RATE;
