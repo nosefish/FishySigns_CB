@@ -55,17 +55,17 @@ public class MC1422 extends CBBaseIC implements IServerOddTickHandler {
 	protected synchronized void constructOptionRules() {
 		super.constructOptionRules();
 		//syntax of line 2 examples: "H:5", "L:15"
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				Pattern.compile("H|L"),
 				new Token(key_HILO)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				Pattern.compile(":"),
 				new Token(key_COLON)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_TICKS)));
 		// remaining ticks on last line
-		icOptionRules[3].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_TICKS_REMAINING)));
 	}
@@ -90,15 +90,10 @@ public class MC1422 extends CBBaseIC implements IServerOddTickHandler {
 
 	@Override
 	public synchronized boolean validateOnLoad() {
-		if (! super.validateOnLoad()) {
-			return false;
-		}
-		if (! (icOptions.containsKey(key_HILO)
-				&& icOptions.containsKey(key_COLON)
-				&& icOptions.containsKey(key_TICKS))) {
-			return false;
-		}
-		return true;
+        return super.validateOnLoad()
+               && icOptions.containsKey(key_HILO)
+               && icOptions.containsKey(key_COLON)
+               && icOptions.containsKey(key_TICKS);
 	}
 	
 	@Override

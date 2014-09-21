@@ -25,7 +25,7 @@ public class MC1110 extends CBBaseIC {
 	/**
 	 * The RadioTower used for broadcasting IOSignals
 	 */
-	public static final RadioTower<IOSignal> tower = new RadioTower<IOSignal>();
+	public static final RadioTower<IOSignal> tower = new RadioTower<>();
 	
 	private volatile String bandName;
 
@@ -52,7 +52,7 @@ public class MC1110 extends CBBaseIC {
 	@Override
 	public void constructOptionRules() {
 		super.constructOptionRules();
-		icOptionRules[2].add(
+		icOptionRules.get(2).add(
 				new FishyParser.Rule(
 						PatternLib.pattern_NONEMPTY_STRING,
 						new FishyParser.Token(key_BAND_NAME)));

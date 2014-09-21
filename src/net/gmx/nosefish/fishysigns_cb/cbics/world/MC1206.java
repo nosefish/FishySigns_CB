@@ -34,6 +34,7 @@ public class MC1206 extends MC1205 {
 		return "Sets a block directly below the block the sign is attached to.";
 	}
 	
+    @Override
 	protected FishyLocationInt findTarget() {
 		return this.getLocation()
 				.addIntVector(BACK.toUnitIntVector())

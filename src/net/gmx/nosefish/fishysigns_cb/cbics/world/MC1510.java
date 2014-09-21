@@ -53,10 +53,10 @@ public class MC1510 extends CBBaseIC {
 	@Override
 	public void constructOptionRules() {
 		super.constructOptionRules();
-		icOptionRules[2].add(new FishyParser.Rule(
+		icOptionRules.get(2).add(new FishyParser.Rule(
 				PatternLib.pattern_NONEMPTY_STRING,
 				new FishyParser.Token(key_PLAYER)));
-		icOptionRules[3].add(new FishyParser.Rule(
+		icOptionRules.get(3).add(new FishyParser.Rule(
 				PatternLib.pattern_NONEMPTY_STRING,
 				new FishyParser.Token(key_MESSAGE)));
 	}
@@ -85,16 +85,9 @@ public class MC1510 extends CBBaseIC {
 	
 	@Override
 	public synchronized boolean validateOnLoad() {
-		if (! super.validateOnLoad()) {
-			return false;
-		}
-		if (! icOptions.containsKey(key_PLAYER)) {
-			return false;
-		}
-		if (! icOptions.containsKey(key_MESSAGE)) {
-			return false;
-		}
-		return true;
+		return super.validateOnLoad()
+            && icOptions.containsKey(key_PLAYER)
+            && icOptions.containsKey(key_MESSAGE);
 	}
 	
 	

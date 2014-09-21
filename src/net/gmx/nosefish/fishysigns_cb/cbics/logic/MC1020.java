@@ -54,7 +54,7 @@ public class MC1020 extends CBBaseIC implements IServerOddTickHandler {
 	protected synchronized void constructOptionRules() {
 		super.constructOptionRules();
 		// self-triggered, "S" after the IC-code
-		icOptionRules[1].add(
+		icOptionRules.get(1).add(
 				new FishyParser.Rule(
 						PatternLib.pattern_CB_SELF_TRIGGERED,
 						new FishyParser.Token(key_SELF_TRIGGERED)));

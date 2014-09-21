@@ -52,7 +52,7 @@ public class MC1421 extends CBBaseIC implements IServerOddTickHandler {
 	@Override
 	public void constructOptionRules() {
 		super.constructOptionRules();
-		icOptionRules[2].add(new FishyParser.Rule(
+		icOptionRules.get(2).add(new FishyParser.Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new FishyParser.Token(key_DIVIDER)));
 	}
@@ -73,13 +73,8 @@ public class MC1421 extends CBBaseIC implements IServerOddTickHandler {
 	
 	@Override
 	public synchronized boolean validateOnLoad() {
-		if (! super.validateOnLoad()) {
-			return false;
-		}
-		if (! icOptions.containsKey(key_DIVIDER)) {
-			return false;
-		}
-		return true;
+		return super.validateOnLoad()
+               && icOptions.containsKey(key_DIVIDER);
 	}
 	
 	@Override

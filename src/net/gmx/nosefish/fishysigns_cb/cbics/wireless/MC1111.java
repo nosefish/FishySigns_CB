@@ -53,11 +53,11 @@ public class MC1111
 	@Override
 	public void constructOptionRules() {
 		super.constructOptionRules();
-		icOptionRules[1].add(
+		icOptionRules.get(1).add(
 				new FishyParser.Rule(
 						PatternLib.pattern_CB_SELF_TRIGGERED,
 						new FishyParser.Token(key_SELF_TRIGGERED)));
-		icOptionRules[2].add(
+		icOptionRules.get(2).add(
 				new FishyParser.Rule(
 						PatternLib.pattern_NONEMPTY_STRING,
 						new FishyParser.Token(key_BAND_NAME)));
@@ -106,6 +106,7 @@ public class MC1111
 				MC1110.tower, bandName, this, IOSignal.class);
 	}
 
+    @Override
 	protected void refresh() {
 		IOSignal signal = this.antenna.getLastBroadcast();
 		if (signal == null) {

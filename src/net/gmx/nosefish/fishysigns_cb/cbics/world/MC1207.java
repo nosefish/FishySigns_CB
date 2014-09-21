@@ -73,29 +73,29 @@ public class MC1207 extends CBBaseIC {
 	public void constructOptionRules() {
 		super.constructOptionRules();
 		// 3rdLine:  Axis[+-]distance:id:data
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				pattern_AXIS,
 				new Token(key_AXIS))); // required
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				pattern_SIGN,
 				new Token(key_SIGN))); // required
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_DISTANCE))); // required
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_COLON,
 				new Token(key_COLON)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_BLOCK_ID))); // required
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_COLON,
 				new Token(key_COLON)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_BLOCK_DATA)));
 		// 4th line: hold "H"
-		icOptionRules[3].add(new Rule(
+		icOptionRules.get(3).add(new Rule(
 				pattern_HOLD,
 				new Token(key_HOLD)));
 	}
@@ -139,16 +139,11 @@ public class MC1207 extends CBBaseIC {
 	
 	@Override
 	public boolean validateOnLoad() {
-		if (! super.validateOnLoad()) {
-			return false;
-		}
-		if (! (icOptions.containsKey(key_AXIS) &&
-		        icOptions.containsKey(key_SIGN) &&
-		        icOptions.containsKey(key_DISTANCE) &&
-		        icOptions.containsKey(key_BLOCK_ID))) {
-			return false;
-		}
-		return true;
+        return (super.validateOnLoad() &&
+            icOptions.containsKey(key_AXIS) &&
+            icOptions.containsKey(key_SIGN) &&
+            icOptions.containsKey(key_DISTANCE) &&
+            icOptions.containsKey(key_BLOCK_ID));
 	}
 	
 	@Override
@@ -181,13 +176,17 @@ public class MC1207 extends CBBaseIC {
 	
 	protected FishyLocationInt findTarget(String axisString, int distance) {
 		FishyVectorInt axisVector = FishyVectorInt.ZERO;
-		if ("X".equals(axisString)) {
-			axisVector = FishyVectorInt.UNIT_X;
-		} else if ("Y".equals(axisString)) {
-			axisVector = FishyVectorInt.UNIT_Y;
-		} else if ("Z".equals(axisString)) {
-			axisVector = FishyVectorInt.UNIT_Z;
-		}
+        switch (axisString) {
+            case "X":
+                axisVector = FishyVectorInt.UNIT_X;
+                break;
+            case "Y":
+                axisVector = FishyVectorInt.UNIT_Y;
+                break;
+            case "Z":
+                axisVector = FishyVectorInt.UNIT_Z;
+                break;
+        }
 		axisVector = axisVector.scalarIntMult(distance);
 		return this.location.addIntVector(BACK.toUnitIntVector()).addIntVector(axisVector);
 	}

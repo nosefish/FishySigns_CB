@@ -1,6 +1,5 @@
 package net.gmx.nosefish.fishysigns_cb.cbics.logic;
 
-import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.gmx.nosefish.fishylib.worldmath.FishyLocationInt;
@@ -11,7 +10,6 @@ import net.gmx.nosefish.fishysigns.iobox.LeverIOBox;
 
 
 public class MC2020 extends MC1020 {
-	final static Random rng = MC1020.rng;
 	
 	@FishySignIdentifier
 	public static final Pattern[] regEx = {

@@ -119,7 +119,7 @@ public class Lift extends FishySign implements IRightClickInputHandler {
 		UP(Pattern.compile("\\[Lift Up\\]", Pattern.CASE_INSENSITIVE)),
         DOWN(Pattern.compile("\\[Lift Down\\]", Pattern.CASE_INSENSITIVE)),
         NONE(Pattern.compile("\\[Lift\\]", Pattern.CASE_INSENSITIVE));
-		private Pattern regEx;
+		private final Pattern regEx;
 
 		private Type(Pattern p) {
 			this.regEx = p;

@@ -60,17 +60,17 @@ public class MC1205 extends CBBaseIC {
 	public void constructOptionRules() {
 		super.constructOptionRules();
 		// 3rdLine:  id:data
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_BLOCK_ID)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_COLON,
 				new Token(key_COLON)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER,
 				new Token(key_BLOCK_DATA)));
 		// 4th line: "Force"
-		icOptionRules[3].add(new Rule(
+		icOptionRules.get(3).add(new Rule(
 				Pattern.compile("^FORCE$", Pattern.CASE_INSENSITIVE),
 				new Token(key_FORCE)));
 	}
@@ -91,21 +91,15 @@ public class MC1205 extends CBBaseIC {
 	
 	@Override
 	public synchronized boolean validateOnLoad() {
-		if (! super.validateOnLoad()) {
-			return false;
-		}
-		if (! icOptions.containsKey(key_BLOCK_ID)) {
-			return false;
-		}
-		return true;
+		return super.validateOnLoad() && icOptions.containsKey(key_BLOCK_ID);
 	}
 	
 	@Override
 	protected synchronized void initializeIC() {
 		try {
-			blockId = (short) Short.parseShort(icOptions.get(key_BLOCK_ID).getValue());
+			blockId = Short.parseShort(icOptions.get(key_BLOCK_ID).getValue());
 			if (icOptions.containsKey(key_BLOCK_DATA)) {
-				blockData = (short) Short.parseShort(icOptions.get(key_BLOCK_DATA).getValue());
+				blockData = Short.parseShort(icOptions.get(key_BLOCK_DATA).getValue());
 			}
 		} catch(NumberFormatException e) {
 			Log.get().warn("Some silly bugger entered bogus values on an IC sign. Location: "

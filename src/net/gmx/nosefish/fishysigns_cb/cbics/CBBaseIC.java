@@ -36,13 +36,8 @@ public abstract class CBBaseIC
 	 * Values for lines without defined rules are empty.
 	 * Will be null after <code>initialize</code> to save memory!
 	 */
-	@SuppressWarnings("unchecked")
-	protected volatile List<Rule>[] icOptionRules = new List[] {
-		new ArrayList<Rule>(1),
-		new ArrayList<Rule>(1),
-		new ArrayList<Rule>(1),
-		new ArrayList<Rule>(1)
-		};
+	
+	protected ArrayList<List<Rule>> icOptionRules;
 	
 	public static final long DEFAULT_DELAY = 2L;
 	
@@ -53,12 +48,20 @@ public abstract class CBBaseIC
 	 * <code>initializeIC</code> and store references to
 	 * the values that are needed later elsewhere.
 	 */
-	protected Map<String, Token> icOptions = new LinkedHashMap<String, Token>(4);
+	protected Map<String, Token> icOptions = new LinkedHashMap<>(4);
 	
 	protected boolean signTextChanged = false;
 	
 	public CBBaseIC(UnloadedSign sign) {
 		super(sign);
+        icOptionRules = new ArrayList<>(4);
+        
+        for (int i=0; i< 4; ++i) {
+            icOptionRules.add(new ArrayList<Rule>(1));
+        }
+
+        // Overridable method called in constructor
+        // This is ugly, but needed for the loading magic
 		this.constructOptionRules();
 	}
 
@@ -107,15 +110,18 @@ public abstract class CBBaseIC
 	 * line 1 must start with the return value 
 	 * of the IC's <code>getCode</code> method (Option IC_CODE).
 	 * 
-	 * Called in the constructor.
+	 * <b><i>Called in the constructor! When overriding, be aware that
+     * this will be called before the overriding subclass's constructor.
+     * All values used here must be defined at construction time.
+     * static members will work, non-static members will cause chaos!</i></b>
 	 */
-	protected void constructOptionRules() {
+	protected synchronized void constructOptionRules() {
 		// name on the first line
-		icOptionRules[0].add(
+		icOptionRules.get(0).add(
 				new Rule(Pattern.compile("^" + Pattern.quote(getName()) + "$"),
 						new Token("IC_NAME")));
 		// second line starts with IC code
-		icOptionRules[1].add(
+		icOptionRules.get(1).add(
 				new Rule(Pattern.compile("^" + Pattern.quote(getCode())),
 						new Token("IC_CODE")));
 	}
@@ -156,7 +162,7 @@ public abstract class CBBaseIC
 		if (icOptions.containsKey(FishyParser.key_NO_MATCH)) {
 			return false;
 		}
-		return true;
+        return true;
 	}
 
 	/**
@@ -189,7 +195,7 @@ public abstract class CBBaseIC
 	protected synchronized void readOptions() {
 		for (int line = 0; line < 4; ++line) {
 			Map<String, Token> found =
-					FishyParser.findTokens(this.getLine(line), icOptionRules[line]);
+					FishyParser.findTokens(this.getLine(line), icOptionRules.get(line));
 			if (found.containsKey(FishyParser.key_NO_MATCH)) {
 				Token foundNoMatch = found.get(FishyParser.key_NO_MATCH);
 				Token prevNoMatch = icOptions.get(FishyParser.key_NO_MATCH);
@@ -283,6 +289,8 @@ public abstract class CBBaseIC
 	protected class SendHelpOnRighClickHandler implements IRightClickInputHandler { 
 		/**
 		 * Sends a message with help text to the player.
+         * @param playerName
+         * @param block
 		 */
 		@Override
 		public void handleRightClick(String playerName, FishyLocationBlockState block) {
@@ -292,6 +300,7 @@ public abstract class CBBaseIC
 
 		/**
 		 * Anchors the RightClickInputBox to the IC.
+         * @param toAnchor
 		 */
 		@Override
 		public void anchor(IAnchorable toAnchor) {

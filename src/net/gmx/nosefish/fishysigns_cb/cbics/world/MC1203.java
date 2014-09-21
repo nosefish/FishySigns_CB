@@ -56,27 +56,23 @@ public class MC1203 extends CBBaseIC {
 	@Override
 	protected void constructOptionRules() {
 		super.constructOptionRules();
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_POSITIVE_INTEGER, 
 				new Token(key_RADIUS)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				Pattern.compile("\\="), 
 				new Token(key_R_O_DELIMITER)));
-		icOptionRules[2].add(new Rule(
+		icOptionRules.get(2).add(new Rule(
 				PatternLib.pattern_FISHY_VECTOR_INT, 
 				new Token(key_OFFSET)));
-		icOptionRules[3].add(new Rule(
+		icOptionRules.get(3).add(new Rule(
 				PatternLib.pattern_POSITIVE_FLOAT, 
 				new Token(key_CHANCE)));
 	};
 
 	@Override
 	public synchronized boolean validateOnCreate(String playerName) {
-		if (!super.validateOnCreate(playerName)) {
-			return false;
-		}
-		// TODO: anything to do here?
-		return true;
+		return super.validateOnCreate(playerName);
 	}
 	
 	@Override
